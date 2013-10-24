@@ -1,0 +1,6 @@
+tags
+*~
+*.swp
+*main*
+*.o
+*.S
