@@ -11,6 +11,7 @@ struct generic_stack
 
 void generic_stack_init( struct generic_stack **st, const int element_size );
 int generic_stack_isempty( const struct generic_stack *st );
+void *generic_stack_gettop( const struct generic_stack *st );
 void generic_stack_push( struct generic_stack *st, const void *element_entry );
 void generic_stack_pop( struct generic_stack *st, void *element_entry);
 

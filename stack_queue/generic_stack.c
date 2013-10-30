@@ -50,6 +50,17 @@ static void generic_stack_extend( struct generic_stack *st )
     assert(st->element_stack);
 }
 
+/* generic_stack_gettop: return the top element of the stack
+ * @st: the stack whose top element will be returned
+ *
+ * */
+void *generic_stack_gettop( const struct generic_stack *st )
+{
+    assert(st && !generic_stack_isempty(st));
+    int top = st->top-1;
+    return st->element_stack + st->element_size * top;
+}
+
 /* generic_stack_push: push an element into the stack
  * @st: the stack the element to be pushed into
  * @element_entry: the element to be pushed

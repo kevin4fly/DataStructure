@@ -4,7 +4,7 @@
 #include  <stdlib.h> // for malloc() and realloc()
 #include  <assert.h> // for assert()
 
-void generic_queue_init(struct generic_queue **qu, int element_size)
+void generic_queue_init(struct generic_queue **qu, const int element_size)
 {
     (*qu) = malloc(sizeof(struct generic_queue));
     assert(*qu);
