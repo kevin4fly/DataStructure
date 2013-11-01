@@ -91,7 +91,7 @@ void create_bin_tree_by_bracket(struct bin_tree **root, const char *elements)
  * @cnt: the count of the tree node
  *
  * */
-void create_complete_bin_tree(struct bin_tree **root, const char *entrys, const int cnt)
+void create_complete_bin_tree(struct bin_tree **root, const int *entrys, const int cnt)
 {
     struct generic_queue *qu = NULL;
     generic_queue_init(&qu,sizeof(struct bin_tree *));
@@ -315,20 +315,224 @@ int is_bin_search_tree_postorder_list(const int *postorder, const int len);
 void do_convert(struct bin_tree *root, struct bin_tree **list);
 void bin_tree_to_list(struct bin_tree *root);
 
-int bin_tree_total_nodes(const struct bin_tree *root);
-int bin_tree_total_leaves(const struct bin_tree *root);
-int bin_tree_kth_level_nodes(struct bin_tree *root, const int kth);
+/* bin_tree_height: the height of the tree
+ * @root: the root of the tree
+ *
+ * */
+int bin_tree_height(const struct bin_tree *root)
+{
+    if( root == NULL )
+    {
+        return 0;
+    }
+    return MAX(bin_tree_height(root->lchild), bin_tree_height(root->rchild))
+           + 1;
+}
 
-int bin_tree_height(const struct bin_tree *root);
-int bin_tree_isbalanced(const struct bin_tree *root);
-int bin_tree_iscomplete(const struct bin_tree *root);
-int bin_tree_isfull(const struct bin_tree *root);
-int bin_tree_isequivalent(const struct bin_tree *root);
-int bin_tree_ismirrored(const struct bin_tree *root);
-int bin_tree_issubtree(const struct bin_tree *root);
-int bin_tree_ispart(const struct bin_tree *root1, const struct bin_tree *root2);
+/* bin_tree_total_nodes: get the total nodes of the tree
+ * @root: the root of the tree
+ *
+ * */
+int bin_tree_total_nodes(const struct bin_tree *root)
+{
+    if( root == NULL )
+    {
+        return 0;
+    }
+    return bin_tree_total_nodes(root->lchild) +
+           bin_tree_total_nodes(root->rchild) + 1;
+}
+
+/* bin_tree_total_leaves: get the total leaves node of the tree
+ * @root: the root of the tree
+ *
+ * */
+int bin_tree_total_leaves(const struct bin_tree *root)
+{
+    if( root == NULL )
+    {
+        return 0;
+    }
+    if( root->lchild == NULL && root->rchild == NULL )
+    {
+        return 1;
+    }
+    return bin_tree_total_leaves(root->lchild) +
+           bin_tree_total_leaves(root->rchild);
+}
+
+/* bin_tree_kth_level_nodes: the total nodes of the kth level of the tree
+ * @root: the root of the tree
+ *
+ * description: if kth < 1, return 0,
+ *              if kth > the height of the tree, return the total nodes of the
+ *              last level of the tree.
+ * (this cannot implement right now, comment it out from line 379 to 382)
+ * */
+int bin_tree_total_nodes_of_kth_level(const struct bin_tree *root,
+                                      const int kth)
+{
+    if( kth < 1 || root==NULL )
+    {
+        return 0;
+    }
+    //if( kth > bin_tree_height(root) )
+    //{
+    //    return bin_tree_total_nodes_of_kth_level(root,bin_tree_height(root));
+    //}
+    if( kth == 1 )
+    {
+        return 1;
+    }
+    return bin_tree_total_nodes_of_kth_level(root->lchild,kth-1) +
+        bin_tree_total_nodes_of_kth_level(root->rchild,kth-1);
+}
+
+/* bin_tree_total_nodes_of_topn: the total nodes of the top n level of the
+ * tree
+ * @root: the root of the tree
+ * @top: the top level of the tree
+ *
+ * description: if top < 0, return 0,
+ *              if top > the height of the tree, return the totals nodes of
+ *              the tree.
+ * */
+int bin_tree_total_nodes_of_top_nlevel(const struct bin_tree *root,
+                                       const int top)
+{
+    if( top<1 )
+    {
+        return 0;
+    }
+    if( top > bin_tree_height(root) )
+    {
+        return bin_tree_total_nodes(root);
+    }
+    if( top == 1 )
+    {
+        return 1;
+    }
+    return bin_tree_total_nodes_of_top_nlevel(root->lchild,top-1) +
+        bin_tree_total_nodes_of_top_nlevel(root->rchild,top-1) + 1;
+}
+
+/* bin_tree_isbalanced: test if the tree is balanced, which means the delta
+ * height between each left and right child of the tree only up to 1.
+ * Otherwise, it is unbalanced.
+ * @root: the root of the tree
+ *
+ * */
+int bin_tree_isbalanced(const struct bin_tree *root)
+{
+    if( root == NULL )
+    {
+        return 1;
+    }
+    if( abs_int(bin_tree_height(root->lchild),bin_tree_height(root->rchild))>1 )
+    {
+        return 0;
+    }
+    return bin_tree_isbalanced(root->lchild)&&bin_tree_isbalanced(root->rchild);
+}
+
+/* bin_tree_iscomplete: test if the tree is a complete tree
+ * @root: the root of the tree
+ *
+ * */
+int bin_tree_iscomplete(const struct bin_tree *root)
+{
+    struct generic_queue *qu = NULL;
+    struct bin_tree *buffer = NULL;
+    generic_queue_init(&qu,sizeof(struct bin_tree *));
+    generic_queue_in(qu,&root);
+    while( !generic_queue_isempty(qu) )
+    {
+        generic_queue_out(qu,&buffer);
+        if( buffer!=NULL )
+        {
+            generic_queue_in(qu,&(buffer->lchild));
+            generic_queue_in(qu,&(buffer->rchild));
+        }
+        else
+        {
+            while( !generic_queue_isempty(qu) )
+            {
+                generic_queue_out(qu,&buffer);
+                if( buffer!=NULL )
+                {
+                    return 0;
+                }
+            }
+        }
+    }
+    return 1;
+}
+
+/* bin_tree_isfull: test if the tree is a full tree
+ * @root: the root of the tree
+ *
+ * */
+int bin_tree_isfull(const struct bin_tree *root)
+{
+    if( root == NULL )
+    {
+        return 1;
+    }
+    if( bin_tree_height(root->lchild) != bin_tree_height(root->rchild) )
+    {
+        return 0;
+    }
+    return bin_tree_isfull(root->lchild) && bin_tree_isfull(root->rchild);
+}
+
+
+/* bin_tree_isequivalent: test if root1 and root2 are equal to each other
+ * @root1: the root of tree1
+ * @root2: the root of the other tree2
+ *
+ * */
+int bin_tree_isequivalent(const struct bin_tree *root1, const struct bin_tree *root2)
+{
+    if( root1==NULL && root2==NULL )
+    {
+        return 1;
+    }
+    if( root1 == NULL || root2 == NULL )
+    {
+        return 0;
+    }
+    if( root1->key != root2->key )
+    {
+        return 0;
+    }
+    return bin_tree_isequivalent(root1->lchild,root2->lchild)&&
+           bin_tree_isequivalent(root1->rchild,root2->rchild);
+}
+
+/* bin_tree_ismirrored: test if root1 mirros root2
+ * @root1: the root of one tree
+ * @root2: the root of the other tree
+ *
+ * */
+int bin_tree_ismirrored(const struct bin_tree *root1, const struct bin_tree *root2)
+{
+    if( root1==NULL && root2==NULL )
+    {
+        return 1;
+    }
+    if( root1 == NULL || root2 == NULL )
+    {
+        return 0;
+    }
+    if( root1->key != root2->key )
+    {
+        return 0;
+    }
+    return bin_tree_ismirrored(root1->lchild,root2->rchild) &&
+           bin_tree_ismirrored(root1->rchild,root2->lchild);
+}
+int bin_tree_issubtree(const struct bin_tree *root1, const struct bin_tree *root2);
 
 void bin_tree_set_parent(struct bin_tree *root);
 void bin_tree_set_sibling(struct bin_tree *root);
 void bin_tree_traverse_via_sibling(const struct bin_tree *root);
-

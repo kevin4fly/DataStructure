@@ -19,7 +19,6 @@ int random_int_between(const int m, const int n)
 int abs_int(const int a, const int b)
 {
     return a>b?a-b:b-a;
-
 }
 
 void print_array(int *array, int array_size)

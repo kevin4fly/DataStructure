@@ -3,6 +3,7 @@
 
 #include  "../stack_queue/generic_queue.h"
 #include  "../stack_queue/generic_stack.h"
+#include  "../tools/tools.h"
 
 struct bin_tree
 {
@@ -15,7 +16,7 @@ struct bin_tree
 
 struct bin_tree *bin_tree_node_new(const int val);
 void create_bin_tree_by_bracket(struct bin_tree **root, const char *elements);
-void create_complete_bin_tree(struct bin_tree **root, const char *entrys, const int cnt);
+void create_complete_bin_tree(struct bin_tree **root, const int *entrys, const int cnt);
 struct bin_tree *bin_search_tree_search(struct bin_tree *root, const int key);
 void do_bin_search_tree_add_recursive(struct bin_tree **root, struct bin_tree *entry);
 void do_bin_search_tree_add_nonrecursive(struct bin_tree **root, struct bin_tree *entry);
@@ -39,18 +40,18 @@ int is_bin_search_tree_postorder_list(const int *postorder, const int len);
 void do_convert(struct bin_tree *root, struct bin_tree **list);
 void bin_tree_to_list(struct bin_tree *root);
 
+int bin_tree_height(const struct bin_tree *root);
 int bin_tree_total_nodes(const struct bin_tree *root);
 int bin_tree_total_leaves(const struct bin_tree *root);
-int bin_tree_kth_level_nodes(struct bin_tree *root, const int kth);
+int bin_tree_total_nodes_of_kth_level(const struct bin_tree *root, const int kth);
+int bin_tree_total_nodes_of_top_nlevel(const struct bin_tree *root, const int top);
 
-int bin_tree_height(const struct bin_tree *root);
 int bin_tree_isbalanced(const struct bin_tree *root);
 int bin_tree_iscomplete(const struct bin_tree *root);
 int bin_tree_isfull(const struct bin_tree *root);
-int bin_tree_isequivalent(const struct bin_tree *root);
-int bin_tree_ismirrored(const struct bin_tree *root);
-int bin_tree_issubtree(const struct bin_tree *root);
-int bin_tree_ispart(const struct bin_tree *root1, const struct bin_tree *root2);
+int bin_tree_isequivalent(const struct bin_tree *root1, const struct bin_tree *root2);
+int bin_tree_ismirrored(const struct bin_tree *root1, const struct bin_tree *root2);
+int bin_tree_issubtree(const struct bin_tree *root1, const struct bin_tree *root2);
 
 void bin_tree_set_parent(struct bin_tree *root);
 void bin_tree_set_sibling(struct bin_tree *root);
