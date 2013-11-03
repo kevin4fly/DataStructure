@@ -24,12 +24,13 @@ void bin_search_tree_add(struct bin_tree **root, const int element);
 void bin_search_tree_del(struct bin_tree **root, const int del_key);
 
 void breadth_traverse_first_bin_tree(const struct bin_tree *root);
+void depth_traverse_first_bin_tree(const struct bin_tree *root);
 void preorder_traverse_bin_tree_recursive(const struct bin_tree *root);
-void preorder_traverse_bin_tree_nonrecursive1(const struct bin_tree *root);
+void preorder_traverse_bin_tree_nonrecursive(const struct bin_tree *root);
 void inorder_traverse_bin_tree_recursive(const struct bin_tree *root);
-void inorder_traverse_bin_tree_nonrecursive1(const struct bin_tree *root);
+void inorder_traverse_bin_tree_nonrecursive(const struct bin_tree *root);
 void postorder_traverse_bin_tree_recursive(const struct bin_tree *root);
-void postorder_traverse_bin_tree_nonrecursive1(const struct bin_tree *root);
+void postorder_traverse_bin_tree_nonrecursive(const struct bin_tree *root);
 struct bin_tree *bin_tree_build_by_preorder_inorder_list(const int *preorder, 
                                                          const int *inorder,
                                                          const int len);
@@ -53,8 +54,8 @@ int bin_tree_isequivalent(const struct bin_tree *root1, const struct bin_tree *r
 int bin_tree_ismirrored(const struct bin_tree *root1, const struct bin_tree *root2);
 int bin_tree_issubtree(const struct bin_tree *root1, const struct bin_tree *root2);
 
-void bin_tree_set_parent(struct bin_tree *root);
-void bin_tree_set_sibling(struct bin_tree *root);
+void bin_tree_set_parent(struct bin_tree *child, struct bin_tree *parent);
+void bin_tree_set_sibling(struct bin_tree *root, struct bin_tree *sibling);
 void bin_tree_traverse_via_sibling(const struct bin_tree *root);
 
 #endif  /*BIN_TREE_H*/
