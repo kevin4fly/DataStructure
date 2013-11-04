@@ -303,13 +303,13 @@ void breadth_traverse_first_bin_tree(const struct bin_tree *root)
         if( buffer != NULL )
         {
             printf("%-5d",buffer->key);
-            if( buffer->rchild )
-            {
-                generic_queue_in(qu,&buffer->rchild);
-            }
             if( buffer->lchild )
             {
                 generic_queue_in(qu,&buffer->lchild);
+            }
+            if( buffer->rchild )
+            {
+                generic_queue_in(qu,&buffer->rchild);
             }
         }
     }
@@ -477,9 +477,34 @@ void postorder_traverse_bin_tree_nonrecursive(const struct bin_tree *root)
 }
 
 
+/* bin_tree_build_by_preorder_inorder_list: build binary tree according to
+ * preorder and inorder list
+ * @preorder: the preorder list of the tree
+ * @inorder: the inorder list of the tree
+ * @len: the length of the preorder and inorder list
+ *
+ * */
 struct bin_tree *bin_tree_build_by_preorder_inorder_list(const int *preorder,
                                                          const int *inorder,
-                                                         const int len);
+                                                         const int len)
+{
+    if( preorder == NULL || inorder == NULL || len <= 0 )
+    {
+        return NULL;
+    }
+    int i;
+    for( i=0 ; i<len ; i++ )
+    {
+        if( preorder[0] == inorder[i] )
+        {
+            break;
+        }
+    }
+    struct bin_tree *root = bin_tree_node_new(preorder[0]);
+    root->lchild = bin_tree_build_by_preorder_inorder_list(preorder+1,inorder,i);
+    root->rchild = bin_tree_build_by_preorder_inorder_list(preorder+i+1,inorder+i+1,len-i-1);
+    return root;
+}
 
 /* get_bin_tree_preorder_list: get the preorder list of tree @root into queue
  * @qu
@@ -563,8 +588,45 @@ int is_bin_search_tree_postorder_list(const int *postorder, const int len)
     return is_bin_search_tree_postorder_list(postorder,mid) &&
            is_bin_search_tree_postorder_list(postorder+mid, len-mid-1);
 }
-void do_convert(struct bin_tree *root, struct bin_tree **list);
-void bin_tree_to_list(struct bin_tree *root);
+
+/* do_convert: convert the binary tree to linked list
+ * @root: the root of the tree
+ * @list: the head of the list
+ *
+ *
+ * description: adopt inorder way to convert the tree to list. finally, the
+ * list will point to the last node of the list, thus, in the caller function
+ * we have to move the list pointer to the head/first node of the list.
+ * */
+void do_convert(struct bin_tree *root, struct bin_tree **list)
+{
+    if( root==NULL )
+    {
+        return;
+    }
+    do_convert(root->lchild,list);
+    root->lchild = *list;
+    if( *list != NULL )
+    {
+        (*list)->rchild = root;
+    }
+    *list = root;
+    do_convert(root->rchild,list);
+}
+
+struct bin_tree *bin_tree_to_list(struct bin_tree *root)
+{
+    struct bin_tree *list = NULL;
+    if( root != NULL )
+    {
+        do_convert(root,&list);
+    }
+    while( list->lchild != NULL )
+    {
+        list = list->lchild;
+    }
+    return list;
+}
 
 /* bin_tree_height: the height of the tree
  * @root: the root of the tree

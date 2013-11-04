@@ -39,7 +39,7 @@ void get_bin_tree_inorder_list(const struct bin_tree *root, struct generic_queue
 void get_bin_tree_postorder_list(const struct bin_tree *root, struct generic_queue *qu);
 int is_bin_search_tree_postorder_list(const int *postorder, const int len);
 void do_convert(struct bin_tree *root, struct bin_tree **list);
-void bin_tree_to_list(struct bin_tree *root);
+struct bin_tree *bin_tree_to_list(struct bin_tree *root);
 
 int bin_tree_height(const struct bin_tree *root);
 int bin_tree_total_nodes(const struct bin_tree *root);
