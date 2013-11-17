@@ -1,31 +1,17 @@
 #include  "sort.h"
 
-void insertion_sort(int *array, int n)
-{
-    int i, j;
-    for( i=0 ; i+1<n ; i++ )
-    {
-        int temp = array[i+1];
-        for( j=i+1 ; j>0 && array[j-1]>temp ; j-- )
-        {
-            array[j] = array[j-1];
-        }
-        array[j] = temp;
-    }
-}
-
 void bubble_sort(int *array, int n)
 {
     int i, j;
-    for( i=1 ; i<n ; i++ )
+    for( i=0 ; i<n-1 ; i++ )
     {
-        for( j=0 ; j<n-i ; j++ )
+        for( j=1 ; j<n-i ; j++ )
         {
-            if( array[j]>array[j+1] )
+            if( array[j-1]>array[j] )
             {
                 int temp = array[j];
-                array[j] = array[j+1];
-                array[j+1] = temp;
+                array[j] = array[j-1];
+                array[j-1] = temp;
             }
         }
     }
@@ -34,19 +20,35 @@ void bubble_sort(int *array, int n)
 void selection_sort(int *array, int n)
 {
     int i, j;
-    for( i=0 ; i<n ; i++ )
+    for( i=0 ; i<n-1 ; i++ )
     {
         int k = 0;
-        for( j = 1 ; j<n-i ; j++ )
+        for( j=1 ; j<n-i ; j++ )
         {
-            if( array[k] < array[j] )
+            if( array[k]<array[j] )
             {
-                k = j;
+                k=j;
             }
         }
-        int temp = array[k];
-        array[k] = array[j-1];
-        array[j-1] = temp;
+        int temp = array[j-1];
+        array[j-1] = array[k];
+        array[k] = temp;
+    }
+}
+
+void insertion_sort(int *array, int n)
+{
+    int i, j;
+    for( i=0 ; i<n-1 ; i++ )
+    {
+        int temp = array[i+1];
+        // should compare array[j-1] with temp NOT with array[j],
+        // please DO remember.
+        for( j=i+1 ; j-1>=0 && array[j-1]>temp ; j-- )
+        {
+            array[j] = array[j-1];
+        }
+        array[j] = temp;
     }
 }
 
@@ -55,10 +57,11 @@ void shell_sort(int *array, int n)
     int i, j, gap;
     for( gap = n/2 ; gap>0 ; gap /= 2 )
     {
-        for( i=0 ; i+gap < n ; i++ )
+        for( i=0 ; i+gap<n ; i++ )
         {
             int temp = array[i+gap];
-            for( j=i+gap ; j-gap>=0 && array[j-gap]>temp ; j -= gap )
+            // should be j=j-gap NOT j--, please DO remember
+            for( j=i+gap ; j-gap>=0 && array[j-gap]>temp; j-=gap )
             {
                 array[j] = array[j-gap];
             }
@@ -70,15 +73,14 @@ void shell_sort(int *array, int n)
 void bin_insertion_sort(int *array, int n)
 {
     int i, j;
-    for( i=0 ; i<n ; i++ )
+    for( i=0 ; i<n-1 ; i++ )
     {
-        int temp = array[i+1];
         j = i + 1;
-        int low = 0, high = i;
+        int temp=array[j], low=0, high=i;
         while( low<=high )
         {
             int mid=(low+high)/2;
-            if( temp < array[mid] )
+            if( temp<array[mid] )
             {
                 high = mid - 1;
             }
@@ -87,7 +89,7 @@ void bin_insertion_sort(int *array, int n)
                 low = mid + 1;
             }
         }
-        while( j>low )
+        while( low<j )
         {
             array[j] = array[j-1];
             j--;
@@ -99,10 +101,10 @@ void bin_insertion_sort(int *array, int n)
 static void merge(int *array, int low, int mid, int high)
 {
     int i=low, j=mid+1, k=0, len=high-low+1;
-    int *temp = malloc(sizeof(int)*len);
+    int *temp = malloc(sizeof(int) * len);
     while( i<=mid && j<=high )
     {
-        temp[k++]=array[i]<=array[j]?array[i++]:array[j++];
+        temp[k++] = array[i]<=array[j] ? array[i++] : array[j++];
     }
     while( i<=mid )
     {
@@ -112,19 +114,20 @@ static void merge(int *array, int low, int mid, int high)
     {
         temp[k++]=array[j++];
     }
-    //memcpy(array+low,temp,sizeof(int)*len);
+    //should be len*sizeof(int) NOT len
+    //memcpy(array+low,temp,len*sizeof(int));
     for( k=0 ; k<len ; k++ )
     {
-        array[low++]=temp[k];
+        array[low+k] = temp[k];
     }
     free(temp);
 }
 
 void merge_sort(int *array, int low, int high)
 {
-    if( low < high )
+    if( low<high )
     {
-        int mid = (low + high)/2;
+        int mid = (low+high)/2;
         merge_sort(array,low,mid);
         merge_sort(array,mid+1,high);
         merge(array,low,mid,high);
@@ -133,7 +136,7 @@ void merge_sort(int *array, int low, int high)
 
 static int partition(int *array, int low, int high)
 {
-    int i=low, j=high-1;
+    int i = low, j = high-1;
     while( i<=j )
     {
         while( i<=j && array[i]<=array[high] )
@@ -170,7 +173,7 @@ static int random_partition(int *array, int low, int high)
 
 void quick_sort(int *array, int low, int high)
 {
-    if( high>low )
+    if( low<high )
     {
         int mid = random_partition(array, low, high);
         quick_sort(array,low,mid-1);
@@ -189,28 +192,27 @@ static void max_heapify_recursive(int *array, int n, int index)
     {
         largest = 2*index+1;
     }
-    if( largest!=index )
+    if( largest != index )
     {
-        int temp = array[index];
-        array[index] = array[largest];
-        array[largest] = temp;
+        int temp = array[largest];
+        array[largest] = array[index];
+        array[index] = temp;
         max_heapify_recursive(array,n,largest);
     }
 }
 
 static void max_heapify_nonrecursive(int *array, int n, int index)
 {
-    int flag = 1;
-    int largest = index;
+    int flag = 1, largest = index;
     while( flag )
     {
-        if( 2*index <= n && array[2*index] > array[largest] )
+        if( 2*index<=n && array[2*index]>array[largest] )
         {
             largest = 2*index;
         }
-        if( 2*index+1 <= n && array[2*index+1] > array[largest])
+        if( 2*index+1<=n && array[2*index+1]>array[largest] )
         {
-            largest = 2*index +1;
+            largest = 2*index+1;
         }
         if( largest != index )
         {
@@ -220,14 +222,16 @@ static void max_heapify_nonrecursive(int *array, int n, int index)
             index = largest;
         }
         else
+        {
             flag = 0;
+        }
     }
 }
 
-static void build_heap(int *array, int n)
+static void build_heap(int  *array, int n)
 {
     int i;
-    for( i=n/2 ; i>0 ; i-- )
+    for( i=n/2 ; i>=1 ; i-- )
     {
         //max_heapify_recursive(array,n,i);
         max_heapify_nonrecursive(array,n,i);
@@ -243,7 +247,7 @@ void heap_sort(int *array, int n)
         int temp = array[i];
         array[i] = array[1];
         array[1] = temp;
-        //max_heapify_recursive(array, i-1, 1);
+        //max_heapify_recursive(array,i-1,1);
         max_heapify_nonrecursive(array,i-1,1);
     }
 }
@@ -260,11 +264,15 @@ void counting_sort(int *a, int n, int k)
     {
         c[i] = c[i] + c[i-1];
     }
-    //form high to low , in order to guarantee the stable sort
+    //from high to low to guarantee the stable sort
     for( i=n-1; i>=0 ; i-- )
     {
         b[c[a[i]]-1] = a[i];
         c[a[i]]--;
     }
-    memcpy(a,b,n*sizeof(int));
+    //memcpy(a,b,n*sizeof(int));
+    for( i=0 ; i<n ; i++ )
+    {
+        a[i]=b[i];
+    }
 }
