@@ -5,6 +5,10 @@
 #include  "../stack_queue/generic_stack.h"
 #include  "../tools/tools.h"
 
+#include  <stdio.h>
+#include  <stdlib.h>
+#include  <time.h>
+
 struct bin_tree
 {
     int key;

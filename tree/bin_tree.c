@@ -332,8 +332,14 @@ void depth_traverse_first_bin_tree(const struct bin_tree *root)
         if( buffer != NULL )
         {
             printf("%-5d",buffer->key);
-            generic_stack_push(st,&buffer->rchild);
-            generic_stack_push(st,&buffer->lchild);
+            if( buffer->rchild )
+            {
+                generic_stack_push(st,&buffer->rchild);
+            }
+            if( buffer->lchild )
+            {
+                generic_stack_push(st,&buffer->lchild);
+            }
         }
     }
 }

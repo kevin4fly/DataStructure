@@ -32,7 +32,7 @@ void print_array(int *array, int array_size)
     int i;
     for( i=0 ; i<array_size ; i++ )
     {
-        printf("%-3d",array[i]);
+        printf("%-5d",array[i]);
         if( i%10==9 )
         {
             printf("\n");
