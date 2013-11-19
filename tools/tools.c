@@ -27,7 +27,7 @@ int average_int(const int x, const int y)
     return (x&y)+((x|y)>>1);
 }
 
-void print_array(int *array, int array_size)
+void print_array(const int *array, int array_size)
 {
     int i;
     for( i=0 ; i<array_size ; i++ )

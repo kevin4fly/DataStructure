@@ -1,10 +1,6 @@
 #include  "generic_stack.h"
 
-#include  <string.h> // for memcpy()
-#include  <stdlib.h> // for malloc() and realloc()
-#include  <assert.h> // for assert()
-
-/* generic_stack_init: init the generic stack
+/* generic_stack_init: initialized the generic stack
  * @st: the stack to be initialized
  * @element_size: the size of the element in the stack
  *
@@ -80,7 +76,7 @@ void generic_stack_push( struct generic_stack *st, const void *element_entry )
 
 /* generic_stack_pop: pop the element out of the stack
  * @st: the stack the element to be popped out
- * @element_entry: the element to be popped into
+ * @element_entry: the space the popped out element to be saved
  *
  * */
 void generic_stack_pop( struct generic_stack *st, void *element_entry)

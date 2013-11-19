@@ -1,7 +1,4 @@
 #include  "list_stack.h"
-#include  <stdlib.h> //for malloc()
-#include  <stdio.h>  //for printf()
-#include  <assert.h> //for assert()
 
 /* list_stack_init: init the list stack @st
  * @st: the stack to be initialized

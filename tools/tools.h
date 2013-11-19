@@ -46,6 +46,6 @@ int abs_int(const int a, const int b);
 
 int average_int(const int x, const int y);
 
-void print_array(int *array, int array_size);
+void print_array(const int *array, int array_size);
 
 #endif  /*TOOLS_H*/

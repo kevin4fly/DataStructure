@@ -1,5 +1,10 @@
 #ifndef   LIST_STACK_H
 #define   LIST_STACK_H
+
+#include  <stdlib.h> //for malloc()
+#include  <stdio.h>  //for printf()
+#include  <assert.h> //for assert()
+
 /**< 
  * linked list stack implementation
  *

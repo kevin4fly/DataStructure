@@ -1,6 +1,10 @@
 #ifndef  GENERIC_STACK_H
 #define  GENERIC_STACK_H
 
+#include  <string.h> // for memcpy()
+#include  <stdlib.h> // for malloc() and realloc()
+#include  <assert.h> // for assert()
+
 struct generic_stack
 {
     int total;

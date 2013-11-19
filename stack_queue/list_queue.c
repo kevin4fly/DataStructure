@@ -1,9 +1,5 @@
 #include  "list_queue.h"
 
-#include  <stdlib.h> //for malloc()
-#include  <stdio.h>  //for printf()
-#include  <assert.h> //for assert()
-
 /* list_queue: init the list queue
  * @qu: the queue to be initialized
  *

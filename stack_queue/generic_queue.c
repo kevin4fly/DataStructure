@@ -1,9 +1,10 @@
 #include  "generic_queue.h"
 
-#include  <string.h> // for memcpy()
-#include  <stdlib.h> // for malloc() and realloc()
-#include  <assert.h> // for assert()
-
+/**< generic_queue_init: initialize the generic cyclic queue
+ * @qu: the queue to be initialized
+ * @element_size: the size of the element of the queue
+ *
+ * */
 void generic_queue_init(struct generic_queue **qu, const int element_size)
 {
     (*qu) = malloc(sizeof(struct generic_queue));
@@ -16,18 +17,30 @@ void generic_queue_init(struct generic_queue **qu, const int element_size)
     assert((*qu)->queue_element);
 }
 
+/**< generic_queue_isempty: test if the generic cyclic queue is empty
+ * @qu: the queue to be tested
+ *
+ * */
 int generic_queue_isempty(const struct generic_queue *qu)
 {
     assert(qu);
     return qu->front == qu->rear;
 }
 
+/**< generic_queue_isfull: test if the generic cyclic queue is full
+ *
+ * */
 int generic_queue_isfull(const struct generic_queue *qu)
 {
     assert(qu);
     return (qu->front+1)%qu->total == qu->rear;
 }
 
+/**< generic_queue_in: add an element into the generic cyclic queue
+ * @qu: the queue the element to be added into
+ * @entry: the element to be added
+ *
+ * */
 void generic_queue_in(struct generic_queue *qu, const void *entry)
 {
     assert(qu && !generic_queue_isfull(qu));
@@ -35,6 +48,12 @@ void generic_queue_in(struct generic_queue *qu, const void *entry)
     memcpy(dest_addr,entry,qu->element_size);
     qu->front=(qu->front+1)%qu->total;
 }
+
+/**< generic_queue_out: delete an element from the generic cyclic queue
+ * @qu: the queue the element to be deleted from
+ * @entry: the space the deleted element to be saved
+ *
+ * */
 void generic_queue_out(struct generic_queue *qu, void *entry)
 {
     assert(qu && !generic_queue_isempty(qu));

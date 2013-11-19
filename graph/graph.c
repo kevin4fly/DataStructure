@@ -60,7 +60,7 @@ boolean adj_list_graph_add_edge(struct adj_list_graph *g, const int start, const
     return true;
 }
 
-/**< adj_list_graph_dadd_edge: add an double edge to the graph
+/**< adj_list_graph_dadd_edge: add a double edge to the graph
  * @g: the graph the double edge to be added into
  * @start: the start node of the edge
  * @end: the end node of the edge
@@ -132,7 +132,7 @@ boolean adj_list_graph_ddel_edge(struct adj_list_graph *g, const int start, cons
 }
 
 /**< adj_list_graph_display: display the adjacent list graph
- * @: the graph to be displayed
+ * @g: the graph to be displayed
  *
  * */
 void adj_list_graph_display(const struct adj_list_graph *g)
@@ -247,3 +247,133 @@ void adj_list_graph_DFS_visit(const struct adj_list_graph *g)
         adj_list_graph_DFS_nonrecursive(g,&g->vertics[i]);
     }
 }
+
+
+/**< adj_matrix_graph_init: initialize the ajacent matrix graph
+ * @g: the graph to be initialized
+ *
+ * */
+void adj_matrix_graph_init(struct adj_matrix_graph **g)
+{
+    *g = malloc(sizeof(int)*MAX_GNODES*MAX_GNODES);
+    int *dest = (*g)->map[0];
+    memset(dest,0,sizeof(int)*MAX_GNODES*MAX_GNODES);
+    //int i;
+    //for( i=0 ; i<MAX_GNODES*MAX_GNODES ; i++ )
+    //{
+    //    dest[i] = 0;
+    //}
+}
+
+/**< adj_matrix_graph_add_edge: add the single edge to the graph
+ * @g: the graph the edge to be added into
+ * @start: the start node of the edge
+ * @end: the end node of the edge
+ *
+ * */
+boolean adj_matrix_graph_add_edge(struct adj_matrix_graph *g, const int start, const int end)
+{
+    assert(g);
+    if( g->map[start][end] )
+    {
+        printf("the edge %d->%d is already in the graph!\n", start, end);
+        return false;
+    }
+    g->map[start][end] = 1;
+    return true;
+}
+
+/**< adj_matrix_graph_dadd_edge: add the double edge to the graph
+ * @g: the graph the edge to be added into
+ * @start: the start node of the edge
+ * @end: the end node of the edge
+ *
+ * */
+boolean adj_matrix_graph_dadd_edge(struct adj_matrix_graph *g, const int start, const int end)
+{
+    boolean a = adj_matrix_graph_add_edge(g,start,end);
+    boolean b = adj_matrix_graph_add_edge(g,end,start);
+    return a && b;
+}
+
+/**< adj_matrix_graph_del_edge: delete the single edge from the graph
+ * @g: the graph the edge to be deleted from
+ * @start: the start node of the edge
+ * @end: the end node of the edge
+ *
+ * */
+boolean adj_matrix_graph_del_edge(struct adj_matrix_graph *g, const int start, const int end)
+{
+    assert(g);
+    if( g->map[start][end] == 0 )
+    {
+        printf("the edge %d->%d does not exist!\n",start, end);
+        return false;
+    }
+    g->map[start][end] = 0;
+    return true;
+}
+
+/**< adj_matrix_graph_ddel_edge: delete the double edge from the graph
+ * @g: the graph the edge to be deleted from
+ * @start: the start node of the edge
+ * @end: the end node of the edge
+ *
+ * */
+boolean adj_matrix_graph_ddel_edge(struct adj_matrix_graph *g, const int start, const int end)
+{
+    boolean a = adj_matrix_graph_del_edge(g,start,end);
+    boolean b = adj_matrix_graph_del_edge(g,end,start);
+    return a && b;
+}
+
+/**< adj_matrix_graph_display: display the adjacent matrix graph
+ * @g: the graph to be displayed
+ *
+ * */
+void adj_matrix_graph_display(const struct adj_matrix_graph *g)
+{
+    const int *src = g->map[0];
+    print_array(src,MAX_GNODES*MAX_GNODES);
+    //int i = 0;
+    //while( i<MAX_GNODES*MAX_GNODES )
+    //{
+    //    printf("%-5d",src[i++]);
+    //}
+}
+
+/**< adj_matrix_graph_BFS_visit: adjacent matrix graph breadth first searching
+ * @g: the graph to be searched
+ * @vertex: the vertex to be searched begin with
+ *
+ * */
+void adj_matrix_graph_BFS_visit(const struct adj_matrix_graph *g, const int vertex)
+{
+    assert(g);
+    assert(vertex>=0 && vertex <MAX_GNODES);
+    struct seq_queue *qu = NULL;
+    seq_queue_init(&qu);
+    seq_queue_in(qu,vertex);
+    while( !seq_queue_isempty(qu) )
+    {
+        int v = 0;
+        seq_queue_out(qu,&v);
+        if( !visited[v] )
+        {
+            printf("V%-5d",v);
+            visited[v] = 1;
+            int i = 0;
+            while(i<MAX_GNODES)
+            {
+                if( g->map[v][i] )
+                {
+                    seq_queue_in(qu,i);
+                }
+                i++;
+            }
+        }
+    }
+}
+void adj_matrix_graph_DFS_recursive(const struct adj_matrix_graph *g, const int vertex);
+void adj_matrix_graph_DFS_nonrecursive(const struct adj_matrix_graph *g, const int vertex);
+void adj_matrix_graph_DFS_visit(const struct adj_matrix_graph *g);
