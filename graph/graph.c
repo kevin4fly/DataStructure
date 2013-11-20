@@ -16,7 +16,7 @@ struct vertex_node *vertex_node_new(int key)
     return new;
 }
 
-/**< adj_list_graph_init: initiate the graph
+/**< adj_list_graph_init: initialize the adjacent list graph
  * @g: the graph to be initialized
  *
  * */
@@ -44,7 +44,7 @@ boolean adj_list_graph_add_edge(struct adj_list_graph *g, int start, int end)
 {
     assert(g);
     struct vertex_node *p = g->vertics[start].next;
-    while( p )
+    while( p != NULL )
     {
         if( p->key == end )
         {
@@ -94,7 +94,7 @@ boolean adj_list_graph_del_edge(struct adj_list_graph *g, int start, int end)
 {
     assert(g);
     struct vertex_node *p = &g->vertics[start];
-    while( p->next )
+    while( p->next != NULL )
     {
         if( p->key == end )
         {
@@ -131,6 +131,47 @@ boolean adj_list_graph_ddel_edge(struct adj_list_graph *g, int start, int end)
     return a&&b;
 }
 
+/**< adj_list_graph_indegree: counting the in degree of the specified vertex
+ * @g: the graph of the vertex
+ * @vnode: the in degree of the vertex to be counted
+ *
+ * */
+int adj_list_graph_indegree(const struct adj_list_graph *g, const struct vertex_node *vnode)
+{
+    int indegree = 0, i;
+    for( i=0 ; i<MAX_GNODES ; i++ )
+    {
+        const struct vertex_node *t = g->vertics[i].next;
+        while( t != NULL )
+        {
+            if( t->key == vnode->key )
+            {
+                indegree++;
+                break;
+            }
+            t = t->next;
+        }
+    }
+    return indegree;
+}
+
+/**< adj_list_graph_outdegree: counting the out degree of the specified vertex
+ * @g: the graph of the vertex
+ * @vnode: the out degree of the vertex to be counted
+ *
+ * */
+int adj_list_graph_outdegree(const struct adj_list_graph *g, const struct vertex_node *vnode)
+{
+    int outdegree = 0;
+    const struct vertex_node *t = g->vertics[vnode->key].next;
+    while( t != NULL )
+    {
+        outdegree++;
+        t = t->next;
+    }
+    return outdegree;
+}
+
 /**< adj_list_graph_display: display the adjacent list graph
  * @g: the graph to be displayed
  *
@@ -142,7 +183,7 @@ void adj_list_graph_display(const struct adj_list_graph *g)
     {
         printf("V%d", g->vertics[i].key);
         struct vertex_node *t = g->vertics[i].next;
-        while( t )
+        while( t != NULL )
         {
             printf("%5d",t->key);
             t = t->next;
@@ -172,7 +213,7 @@ void adj_list_graph_BFS_visit(const struct adj_list_graph *g, const struct verte
             printf("V%-5d",entry->key);
             visited[entry->key] = 1;
             struct vertex_node *t = g->vertics[entry->key].next;
-            while( t )
+            while( t != NULL )
             {
                 generic_queue_in(qu,&t);
                 t = t->next;
@@ -181,7 +222,7 @@ void adj_list_graph_BFS_visit(const struct adj_list_graph *g, const struct verte
     }
 }
 
-/**< adj_list_graph_DFS_recursive: adjacent list graph depth first searching
+/**< adj_list_graph_DFS_recursive: adjacent list graph depth first searching recursively
  * @g: the graph to be searched
  * @vnode: the node to be searched begin with
  *
@@ -205,9 +246,9 @@ void adj_list_graph_DFS_recursive(const struct adj_list_graph *g, const struct v
 }
 
 /**< adj_list_graph_DFS_nonrecursive: adjacent list graph depth first searching
- * with non-recursive way.
+ * non-recursive
  * @g: the graph to be searched
- * @vnode: the node to be searched begin with
+ * @vnode: the vertex of the graph to be searched begin with
  *
  * */
 void adj_list_graph_DFS_nonrecursive(const struct adj_list_graph *g, const struct vertex_node *vnode)
@@ -256,6 +297,8 @@ void adj_list_graph_DFS_visit(const struct adj_list_graph *g)
 void adj_matrix_graph_init(struct adj_matrix_graph **g)
 {
     *g = malloc(sizeof(int)*MAX_GNODES*MAX_GNODES);
+    assert(*g);
+    // int *dest = map[0] = &map[0][0]
     int *dest = (*g)->map[0];
     memset(dest,0,sizeof(int)*MAX_GNODES*MAX_GNODES);
     //int i;
@@ -283,8 +326,8 @@ boolean adj_matrix_graph_add_edge(struct adj_matrix_graph *g, int start, int end
     return true;
 }
 
-/**< adj_matrix_graph_dadd_edge: add the double edge to the graph
- * @g: the graph the edge to be added into
+/**< adj_matrix_graph_dadd_edge: add a double edge to the graph
+ * @g: the graph the double edge to be added into
  * @start: the start node of the edge
  * @end: the end node of the edge
  *
@@ -325,6 +368,43 @@ boolean adj_matrix_graph_ddel_edge(struct adj_matrix_graph *g, int start, int en
     boolean a = adj_matrix_graph_del_edge(g,start,end);
     boolean b = adj_matrix_graph_del_edge(g,end,start);
     return a && b;
+}
+
+/**< adj_matrix_graph_indegree: counting the in degree of the specified vertex
+ * @g: the graph of the vertex
+ * @vertex: the in degree of the vertex to be counted
+ *
+ * */
+int adj_matrix_graph_indegree(const struct adj_matrix_graph *g, int vertex)
+{
+    int indegree = 0, i;
+    for( i=0 ; i<MAX_GNODES ; i++ )
+    {
+        if( g->map[i][vertex] )
+        {
+            indegree++;
+        }
+    }
+    return indegree;
+}
+
+/**< adj_matrix_graph_outdegree: counting the out degree of the specified
+ * vertex
+ * @g: the graph of the vertex
+ * @vertex: the out degree of the vertex to be counted
+ *
+ * */
+int adj_matrix_graph_outdegree(const struct adj_matrix_graph *g, int vertex)
+{
+    int outdegree = 0, i;
+    for( i=0 ; i<MAX_GNODES ; i++ )
+    {
+        if( g->map[vertex][i] )
+        {
+            outdegree++;
+        }
+    }
+    return outdegree;
 }
 
 /**< adj_matrix_graph_display: display the adjacent matrix graph
@@ -437,6 +517,7 @@ void adj_matrix_graph_DFS_nonrecursive(const struct adj_matrix_graph *g, int ver
  * */
 void adj_matrix_graph_DFS_visit(const struct adj_matrix_graph *g)
 {
+    assert(g);
     int i = 0;
     for( i=0 ; i<MAX_GNODES ; i++ )
     {
