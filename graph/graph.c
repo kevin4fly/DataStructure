@@ -7,7 +7,7 @@ static int visited[MAX_GNODES];
  * @key: the value of the node to be created
  *
  * */
-struct vertex_node *vertex_node_new(const int key)
+struct vertex_node *vertex_node_new(int key)
 {
     struct vertex_node *new = malloc(sizeof(struct vertex_node));
     assert(new);
@@ -40,7 +40,7 @@ void adj_list_graph_init(struct adj_list_graph **g)
  * description: if the edge already exist, the edge will not add to the graph
  * and print an information to remind.
  * */
-boolean adj_list_graph_add_edge(struct adj_list_graph *g, const int start, const int end)
+boolean adj_list_graph_add_edge(struct adj_list_graph *g, int start, int end)
 {
     assert(g);
     struct vertex_node *p = g->vertics[start].next;
@@ -70,7 +70,7 @@ boolean adj_list_graph_add_edge(struct adj_list_graph *g, const int start, const
  * However, if both of them are exist alreay, none of them will be added.
  * Related information will be popped up also.
  * */
-boolean adj_list_graph_dadd_edge(struct adj_list_graph *g, const int start, const int end)
+boolean adj_list_graph_dadd_edge(struct adj_list_graph *g, int start, int end)
 {
     assert(g);
     //comment it up, if the first part is true then the second part will NOT
@@ -90,7 +90,7 @@ boolean adj_list_graph_dadd_edge(struct adj_list_graph *g, const int start, cons
  * will be popped up.
  *
  * */
-boolean adj_list_graph_del_edge(struct adj_list_graph *g, const int start, const int end)
+boolean adj_list_graph_del_edge(struct adj_list_graph *g, int start, int end)
 {
     assert(g);
     struct vertex_node *p = &g->vertics[start];
@@ -120,7 +120,7 @@ boolean adj_list_graph_del_edge(struct adj_list_graph *g, const int start, const
  * Related information will be popped up also.
  *
  * */
-boolean adj_list_graph_ddel_edge(struct adj_list_graph *g, const int start, const int end)
+boolean adj_list_graph_ddel_edge(struct adj_list_graph *g, int start, int end)
 {
     assert(g);
     //comment it up, if the first part is true then the second part will NOT
@@ -271,7 +271,7 @@ void adj_matrix_graph_init(struct adj_matrix_graph **g)
  * @end: the end node of the edge
  *
  * */
-boolean adj_matrix_graph_add_edge(struct adj_matrix_graph *g, const int start, const int end)
+boolean adj_matrix_graph_add_edge(struct adj_matrix_graph *g, int start, int end)
 {
     assert(g);
     if( g->map[start][end] )
@@ -289,7 +289,7 @@ boolean adj_matrix_graph_add_edge(struct adj_matrix_graph *g, const int start, c
  * @end: the end node of the edge
  *
  * */
-boolean adj_matrix_graph_dadd_edge(struct adj_matrix_graph *g, const int start, const int end)
+boolean adj_matrix_graph_dadd_edge(struct adj_matrix_graph *g, int start, int end)
 {
     boolean a = adj_matrix_graph_add_edge(g,start,end);
     boolean b = adj_matrix_graph_add_edge(g,end,start);
@@ -302,7 +302,7 @@ boolean adj_matrix_graph_dadd_edge(struct adj_matrix_graph *g, const int start, 
  * @end: the end node of the edge
  *
  * */
-boolean adj_matrix_graph_del_edge(struct adj_matrix_graph *g, const int start, const int end)
+boolean adj_matrix_graph_del_edge(struct adj_matrix_graph *g, int start, int end)
 {
     assert(g);
     if( g->map[start][end] == 0 )
@@ -320,7 +320,7 @@ boolean adj_matrix_graph_del_edge(struct adj_matrix_graph *g, const int start, c
  * @end: the end node of the edge
  *
  * */
-boolean adj_matrix_graph_ddel_edge(struct adj_matrix_graph *g, const int start, const int end)
+boolean adj_matrix_graph_ddel_edge(struct adj_matrix_graph *g, int start, int end)
 {
     boolean a = adj_matrix_graph_del_edge(g,start,end);
     boolean b = adj_matrix_graph_del_edge(g,end,start);
@@ -347,7 +347,7 @@ void adj_matrix_graph_display(const struct adj_matrix_graph *g)
  * @vertex: the vertex to be searched begin with
  *
  * */
-void adj_matrix_graph_BFS_visit(const struct adj_matrix_graph *g, const int vertex)
+void adj_matrix_graph_BFS_visit(const struct adj_matrix_graph *g, int vertex)
 {
     assert(g);
     assert(vertex>=0 && vertex <MAX_GNODES);
@@ -374,6 +374,73 @@ void adj_matrix_graph_BFS_visit(const struct adj_matrix_graph *g, const int vert
         }
     }
 }
-void adj_matrix_graph_DFS_recursive(const struct adj_matrix_graph *g, const int vertex);
-void adj_matrix_graph_DFS_nonrecursive(const struct adj_matrix_graph *g, const int vertex);
-void adj_matrix_graph_DFS_visit(const struct adj_matrix_graph *g);
+
+/**< adj_matrix_graph_DFS_recursive: adjacent matrix graph depth first
+ * searching recursively
+ * @g: the graph to be searched
+ * @vertex: the vertex to be searched begin with
+ *
+ * */
+void adj_matrix_graph_DFS_recursive(const struct adj_matrix_graph *g, int vertex)
+{
+    if( !visited[vertex] )
+    {
+        printf("V%-5d",vertex);
+        visited[vertex] = 1;
+        int i = 0;
+        while( i<MAX_GNODES )
+        {
+            if( g->map[vertex][i] )
+            {
+                adj_matrix_graph_DFS_recursive(g,i);
+            }
+            i++;
+        }
+    }
+}
+
+/**< adj_matrix_graph_DFS_nonrecursive: adjacent matrix graph depth first
+ * searching non-recursively
+ * @g: the graph to be searched
+ * @vertex: the vertex of the graph to be searched begin with
+ *
+ * */
+void adj_matrix_graph_DFS_nonrecursive(const struct adj_matrix_graph *g, int vertex)
+{
+    struct seq_stack *st = NULL;
+    seq_stack_init(&st);
+    seq_stack_push(st,vertex);
+    while( !seq_stack_isempty(st))
+    {
+        int v = 0;
+        seq_stack_pop(st,&v);
+        if( !visited[v] )
+        {
+            printf("V%-5d",v);
+            visited[v] = 1;
+            int i = 0;
+            while( i<MAX_GNODES )
+            {
+                if( g->map[v][i] )
+                {
+                    seq_stack_push(st,i);
+                }
+                i++;
+            }
+        }
+    }
+}
+
+/**< adj_matrix_graph_DFS_visit: adjacent matrix graph depth first searching
+ * @g: the graph to be searched
+ *
+ * */
+void adj_matrix_graph_DFS_visit(const struct adj_matrix_graph *g)
+{
+    int i = 0;
+    for( i=0 ; i<MAX_GNODES ; i++ )
+    {
+        //adj_matrix_graph_DFS_recursive(g,i);
+        adj_matrix_graph_DFS_nonrecursive(g,i);
+    }
+}

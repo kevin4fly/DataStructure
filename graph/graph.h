@@ -40,13 +40,16 @@ struct adj_list_graph
     struct vertex_node vertics[MAX_GNODES];
 };
 
-struct vertex_node *vertex_node_new(const int key);
+struct vertex_node *vertex_node_new(int key);
 void adj_list_graph_init(struct adj_list_graph **g);
 
-boolean adj_list_graph_add_edge(struct adj_list_graph *g, const int start, const int end);
-boolean adj_list_graph_dadd_edge(struct adj_list_graph *g, const int start, const int end);
-boolean adj_list_graph_del_edge(struct adj_list_graph *g, const int start, const int end);
-boolean adj_list_graph_ddel_edge(struct adj_list_graph *g, const int start, const int end);
+boolean adj_list_graph_add_edge(struct adj_list_graph *g, int start, int end);
+boolean adj_list_graph_dadd_edge(struct adj_list_graph *g, int start, int end);
+boolean adj_list_graph_del_edge(struct adj_list_graph *g, int start, int end);
+boolean adj_list_graph_ddel_edge(struct adj_list_graph *g, int start, int end);
+
+int adj_list_graph_indegree(const struct adj_list_graph *g, const struct vertex_node *vnode);
+int adj_list_graph_outdegree(const struct adj_list_graph *g, const struct vertex_node *vnode);
 
 void adj_list_graph_display(const struct adj_list_graph *g);
 void adj_list_graph_BFS_visit(const struct adj_list_graph *g, const struct vertex_node *vnode);
@@ -67,15 +70,18 @@ struct adj_matrix_graph
 
 void adj_matrix_graph_init(struct adj_matrix_graph **g);
 
-boolean adj_matrix_graph_add_edge(struct adj_matrix_graph *g, const int start, const int end);
-boolean adj_matrix_graph_dadd_edge(struct adj_matrix_graph *g, const int start, const int end);
-boolean adj_matrix_graph_del_edge(struct adj_matrix_graph *g, const int start, const int end);
-boolean adj_matrix_graph_ddel_edge(struct adj_matrix_graph *g, const int start, const int end);
+boolean adj_matrix_graph_add_edge(struct adj_matrix_graph *g, int start, int end);
+boolean adj_matrix_graph_dadd_edge(struct adj_matrix_graph *g, int start, int end);
+boolean adj_matrix_graph_del_edge(struct adj_matrix_graph *g, int start, int end);
+boolean adj_matrix_graph_ddel_edge(struct adj_matrix_graph *g, int start, int end);
+
+int adj_matrix_graph_indegree(const struct adj_matrix_graph *g, int vertex);
+int adj_matrix_graph_outdegree(const struct adj_matrix_graph *g, int vertex);
 
 void adj_matrix_graph_display(const struct adj_matrix_graph *g);
-void adj_matrix_graph_BFS_visit(const struct adj_matrix_graph *g, const int vertex);
-void adj_matrix_graph_DFS_recursive(const struct adj_matrix_graph *g, const int vertex);
-void adj_matrix_graph_DFS_nonrecursive(const struct adj_matrix_graph *g, const int vertex);
+void adj_matrix_graph_BFS_visit(const struct adj_matrix_graph *g, int vertex);
+void adj_matrix_graph_DFS_recursive(const struct adj_matrix_graph *g, int vertex);
+void adj_matrix_graph_DFS_nonrecursive(const struct adj_matrix_graph *g, int vertex);
 void adj_matrix_graph_DFS_visit(const struct adj_matrix_graph *g);
 
 #endif  /*GRAPH_H*/
