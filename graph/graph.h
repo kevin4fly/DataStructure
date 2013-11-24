@@ -18,7 +18,7 @@
 #define   false      0
 
 //total numbers of graphic nodes
-#define   MAX_GNODES 10
+#define   MAX_VERTICS 10
 
 /**< vertex_node: the vertex node struct definition
  * .key: the value of the node
@@ -37,7 +37,7 @@ struct vertex_node
  * */
 struct adj_list_graph
 {
-    struct vertex_node vertics[MAX_GNODES];
+    struct vertex_node vertics[MAX_VERTICS];
 };
 
 struct vertex_node *vertex_node_new(int key);
@@ -65,7 +65,7 @@ void adj_list_graph_DFS_visit(const struct adj_list_graph *g);
  * */
 struct adj_matrix_graph
 {
-    int map[MAX_GNODES][MAX_GNODES];
+    int map[MAX_VERTICS][MAX_VERTICS];
 };
 
 void adj_matrix_graph_init(struct adj_matrix_graph **g);
