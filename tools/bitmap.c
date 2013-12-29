@@ -1,6 +1,6 @@
 #include  "bitmap.h"
 
-void init_bitmap(struct bitmap **bm)
+void bitmap_init(struct bitmap **bm)
 {
     *bm = malloc(sizeof(struct bitmap));
     assert(*bm);
@@ -20,4 +20,9 @@ void clr_bit(struct bitmap *bm, int bit_i)
 int test_bit(const struct bitmap *bm, int bit_i)
 {
     return bm->bits[bit_i>>SHIFT_INT] & (1 << (bit_i & MASK_INT));
+}
+
+void bitmap_destroy(struct bitmap *bm)
+{
+    free(bm);
 }
